@@ -1,0 +1,49 @@
+# 在Java Web中读取配置文件的方式
+## 将配置文件(xxx.properties)放置到src目录下，利用类加载器与Properties类进行读取
+    `
+    ClassLoader classLoader = HelloServlet.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("test.properties");
+        Properties properties = new Properties();
+        try {
+            properties.load(inputStream);
+            String name = properties.getProperty("name");
+            System.out.println(name);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    `
+## 将配置文件(xxx.properties)放置到WEB-INF中的conf目录下，利用ServletContext与Properties进行读取
+    `
+    ServletContext servletContext = getServletContext();
+        String realPath = servletContext.getRealPath("/WEB-INF/conf/abc.properties");
+        System.out.println(realPath);
+        InputStream inputStream = servletContext.getResourceAsStream("/WEB-INF/conf/abc.properties");
+
+        Properties properties = new Properties();
+        try {
+            properties.load(inputStream);
+            String servletName = properties.getProperty("name");
+            System.out.println(servletName);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    `
+## 将配置项放置在web.xml中的<init-param>标签中，利用ServletConfig类进行读取
+    `
+    ServletConfig servletConfig = getServletConfig();
+        Enumeration<String> initParameterNames = servletConfig.getInitParameterNames();
+        while (initParameterNames.hasMoreElements()) {
+            String key = initParameterNames.nextElement();
+            System.out.println(key);
+        }
+    `
+## 将配置项放置在web.xml中的<context-param>标签中,利用ServletContext类进行读取
+    `
+    ServletContext servletContext = getServletContext();
+        Enumeration<String> initParameterNames = servletContext.getInitParameterNames();
+        while (initParameterNames.hasMoreElements()) {
+            String key = initParameterNames.nextElement();
+            String value = servletContext.getInitParameter(key);
+            System.out.println(key + ":" + value);
+        }
+    `
